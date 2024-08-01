@@ -1,0 +1,30 @@
+---
+- project:
+    name: SovereignCloudStack/zuul-scs-jobs
+    default-branch: main
+    merge-mode: "squash-merge"
+    check:
+      jobs:
+        - tox-linters
+    gate:
+      jobs:
+        - tox-linters
+    post:
+      jobs:
+        - noop
+    tag:
+      jobs:
+        - noop
+
+- project:
+    name: SovereignCloudStack/k8s-cluster-api-provider
+    # A periodic job for the k8s-cluster-api-provider project,
+    # intended for execution on specific branches. Find the
+    # job definition by referring to this link: https://github.com/SovereignCloudStack/k8s-cluster-api-provider/blob/main/.zuul.yaml
+    periodic-daily:
+      jobs:
+      - k8s-cluster-api-provider-e2e-conformance:
+          branches:
+          - main
+          vars:
+            git_reference: "{{ zuul.branch }}"

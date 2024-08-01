@@ -1,0 +1,28 @@
+---
+- name: Publishing publish-docs
+  hosts: all
+
+  vars:
+    sphinx_build_dir: "doc/build"
+
+  tasks:
+    - name: Create rclone config dir
+      ansible.builtin.file:
+        path: "~/.config/rclone"
+        state: directory
+        recurse: true
+        mode: "0700"
+
+    - name: Create rclone config file
+      ansible.builtin.copy:
+        content: "{{ rclone_conf.rclone }}"
+        dest: "~/.config/rclone/rclone.conf"
+        mode: "0600"
+      no_log: true
+
+    - name: Run rclone
+      ansible.builtin.shell: |
+        rclone -v copy {{ sphinx_build_dir }}/html doc:{{ zuul.project.short_name }}/
+      args:
+        chdir: "{{ zuul.project.src_dir }}"
+      changed_when: true

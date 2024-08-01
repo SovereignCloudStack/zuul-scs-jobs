@@ -1,0 +1,47 @@
+---
+# This playbook is executed before the post of upload-container-image
+#
+- hosts: localhost
+  vars:
+    vault_addr: "{{ zuul_vault_addr }}"
+    vault_token: "{{ lookup('file', zuul_base_vault_token_path) }}"
+    vault_secret_dest: "{{ zuul.executor.work_root }}/.approle-secret"
+    vault_token_dest: "{{ zuul.executor.work_root }}/.approle-token"
+    vault_role_name: "{{ vault_data.vault_role_name }}"
+
+  roles:
+    - role: create-vault-approle-secret
+
+    - role: create-vault-approle-token
+      vault_role_id: "{{ vault_data.vault_role_id }}"
+      vault_wrapping_token_id: "{{ lookup('file', vault_secret_dest) }}"
+
+- hosts: all
+  vars:
+    vault_addr: "{{ zuul_vault_addr }}"
+    vault_token_dest: "{{ zuul.executor.work_root }}/.approle-token"
+
+  tasks:
+    - name: Get Registry credentials from Vault
+      no_log: true
+      delegate_to: localhost
+      ansible.builtin.uri:
+        url: "{{ vault_addr }}/v1/secret/data/{{ vault_path | default('image_registries') }}"
+        method: "GET"
+        headers:
+          "X-Vault-Token": "{{ lookup('file', vault_token_dest) }}"
+        body_format: json
+        return_content: true
+      register: registry_credentials
+
+    - name: Upload image
+      ansible.builtin.import_role:
+        name: upload-container-image
+      vars:
+        container_registry_credentials: "{{ registry_credentials.json.data.data }}"
+
+
+    - name: Remove vault token file
+      file:
+        path: "{{ vault_token_dest }}"
+        state: "absent"

@@ -1,0 +1,40 @@
+---
+exclude_paths:
+  - zuul.d/secrets.yaml
+mock_modules:
+  - zuul_return
+  - zuul_console
+  - community.hashi_vault.vault_read
+mock_roles:
+  - add-build-sshkey
+  - bindep
+  - build-container-image
+  - emit-job-header
+  - ensure-docker
+  - ensure-if-python
+  - ensure-go
+  - ensure-pip
+  - ensure-podman
+  - ensure-python
+  - ensure-rust
+  - ensure-sphinx
+  - ensure-terraform
+  - ensure-tox
+  - fetch-output
+  - fetch-sphinx-output
+  - fetch-sphinx-tarball
+  - fetch-tox-output
+  - generate-zuul-manifest
+  - log-inventory
+  - merge-output-to-logs
+  - prepare-workspace
+  - promote-docker-image
+  - revoke-sudo
+  - remove-build-sshkey
+  - start-zuul-console
+  - sphinx
+  - tox
+  - validate-host
+use_default_rules: true
+skip_list:
+  - yaml  # we use yamllint

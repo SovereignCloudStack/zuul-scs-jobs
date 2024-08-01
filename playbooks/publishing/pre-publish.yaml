@@ -1,0 +1,9 @@
+---
+- name: Publishing pre-publish
+  hosts: all
+  tasks:
+    - name: Install rclone
+      become: true
+      ansible.builtin.package:
+        name: rclone
+        state: present

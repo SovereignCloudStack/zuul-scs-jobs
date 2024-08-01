@@ -1,0 +1,257 @@
+---
+- pipeline:
+    name: check
+    description: |
+      Newly opened pull requests enter this pipeline to receive an
+      initial check status.
+    manager: independent
+    trigger:
+      github:
+        - event: pull_request
+          action:
+            - opened
+            - changed
+            - reopened
+        - event: pull_request
+          action: comment
+          comment: (?i)^\s*recheck\s*$
+        - event: check_run
+          action: rerequested
+          check: .*/check:.*
+    start:
+      github:
+        check: 'in_progress'
+        comment: false
+    success:
+      github:
+        check: 'success'
+        comment: false
+    failure:
+      github:
+        check: 'failure'
+        comment: false
+    dequeue:
+      github:
+        check: cancelled
+        comment: false
+
+- pipeline:
+    name: gate
+    description: |
+      Changes that have been approved by core developers are enqueued
+      in order in this pipeline, and if they pass tests, will be
+      merged.
+    manager: dependent
+    precedence: high
+    supercedes: check
+    require:
+      github:
+        # review:
+        #   - permission: write
+        #     type: approved
+        label: gate
+        open: true
+        current-patchset: true
+    trigger:
+      github:
+        - event: pull_request_review
+          action: submitted
+          state: approved
+        - event: pull_request
+          action: comment
+          comment: (?i)^\s*regate\s*$
+        - event: pull_request_review
+          action: dismissed
+          state: request_changes
+        - event: pull_request
+          action: status
+          status: ".*:success"
+        - event: check_run
+          action: rerequested
+          check: .*/gate:.*
+        - event: pull_request
+          action: labeled
+          label:
+            - gate
+    start:
+      github:
+        check: 'in_progress'
+        comment: false
+    success:
+      github:
+        check: 'success'
+        comment: false
+        merge: true
+    failure:
+     github:
+        check: 'failure'
+        comment: false
+    dequeue:
+      github:
+        check: cancelled
+        comment: false
+    window-floor: 20
+    window-increase-factor: 2
+
+- pipeline:
+    name: post
+    post-review: true
+    description:
+      This pipeline runs jobs that operate after each change is merged.
+    manager: independent
+    precedence: low
+    trigger:
+      github:
+        - event: push
+          ref: ^refs/heads/.*$
+
+- pipeline:
+    name: tag
+    description: This pipeline runs jobs in response to any tag event.
+    manager: independent
+    precedence: high
+    post-review: true
+    trigger:
+      github:
+        - event: push
+          ref: ^refs/tags/.*$
+
+- pipeline:
+    name: e2e-test
+    description: |
+      Changes that have been seen by trusted reviewer who labeled PR by e2e-test label
+    success-message: Build succeeded (e2e-test pipeline).
+    failure-message: Build failed (e2e-test pipeline).
+    dequeue-message: Build canceled (e2e-test pipeline).
+    manager: independent
+    trigger:
+      github:
+        - event: pull_request
+          action: labeled
+          label:
+            - e2e-test
+    start:
+      github:
+        check: 'in_progress'
+        comment: false
+    success:
+      github:
+        check: 'success'
+        comment: true
+        label:
+          - successful-e2e-test
+        unlabel:
+          - e2e-test
+          - failed-e2e-test
+          - cancelled-e2e-test
+    failure:
+      github:
+        check: 'failure'
+        comment: true
+        label:
+          - failed-e2e-test
+        unlabel:
+          - e2e-test
+          - successful-e2e-test
+          - cancelled-e2e-test
+    dequeue:
+      github:
+        check: cancelled
+        comment: true
+        label:
+          - cancelled-e2e-test
+        unlabel:
+          - e2e-test
+          - successful-e2e-test
+          - failed-e2e-test
+
+- pipeline:
+    name: e2e-quick-test
+    description: |
+      Changes that have been seen by trusted reviewer who labeled PR by e2e-quick-test label
+    success-message: Build succeeded (e2e-quick-test pipeline).
+    failure-message: Build failed (e2e-quick-test pipeline).
+    dequeue-message: Build canceled (e2e-quick-test pipeline).
+    manager: independent
+    trigger:
+      github:
+        - event: pull_request
+          action: labeled
+          label:
+            - e2e-quick-test
+    start:
+      github:
+        check: 'in_progress'
+        comment: false
+    success:
+      github:
+        check: 'success'
+        comment: true
+        label:
+          - successful-e2e-quick-test
+        unlabel:
+          - e2e-quick-test
+          - failed-e2e-quick-test
+          - cancelled-e2e-quick-test
+    failure:
+      github:
+        check: 'failure'
+        comment: true
+        label:
+          - failed-e2e-quick-test
+        unlabel:
+          - e2e-quick-test
+          - successful-e2e-quick-test
+          - cancelled-e2e-quick-test
+    dequeue:
+      github:
+        check: cancelled
+        comment: true
+        label:
+          - cancelled-e2e-quick-test
+        unlabel:
+          - e2e-quick-test
+          - successful-e2e-quick-test
+          - failed-e2e-quick-test
+
+- pipeline:
+    name: unlabel-on-update-e2e-test
+    description: |
+      If a PR is updated and has the successful-e2e-test label, we want to remove that.
+    manager: independent
+    precedence: high
+    trigger:
+      github:
+        - event: pull_request
+          action:
+            - changed
+    require:
+      github:
+        label:
+          - successful-e2e-test
+    success:
+      github:
+        unlabel:
+          - successful-e2e-test
+        comment: false
+
+- pipeline:
+    name: unlabel-on-update-e2e-quick-test
+    description: |
+      If a PR is updated and has the successful-e2e-quick-test label, we want to remove that.
+    manager: independent
+    precedence: high
+    trigger:
+      github:
+        - event: pull_request
+          action:
+            - changed
+    require:
+      github:
+        label:
+          - successful-e2e-quick-test
+    success:
+      github:
+        unlabel:
+          - successful-e2e-quick-test
+        comment: false
