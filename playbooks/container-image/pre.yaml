@@ -1,5 +1,6 @@
 ---
-- hosts: all
+- name: "Prepare container build environment"
+  hosts: all
   tasks:
     - name: Update APT cache  # noqa no-handler
       become: true
@@ -10,9 +11,10 @@
 
     - name: Ensure docker is installed
       when: "container_command | default('podman') == 'docker'"
-      include_role:
+      ansible.builtin.include_role:
         name: ensure-docker
+
     - name: Ensure podman is installed
       when: "container_command | default('podman') != 'docker'"
-      include_role:
+      ansible.builtin.include_role:
         name: ensure-podman
