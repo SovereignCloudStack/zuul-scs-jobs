@@ -3,17 +3,18 @@
     name: scs-build-container-image
     parent: build-container-image
     description: |
-      Build container image(s) in SCS
+      Build container image(s) in SCS using podman
 
       .. include:: ../../playbooks/container-image/README.rst
 
 - job:
     name: scs-upload-container-image
-    parent: upload-container-image
+    parent: scs-build-container-image
     description: |
-      Build and upload container image(s) in SCS
+      Build and upload container image(s) in SCS using podman
 
       .. include:: ../../playbooks/container-image/README.rst
+    post-run: playbooks/container-image/upload.yaml
     vars:
       vault_data:
         vault_role_name: "zuul_scs_sovereigncloudstack_zuul-config"
