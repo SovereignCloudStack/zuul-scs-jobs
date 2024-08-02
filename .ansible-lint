@@ -35,6 +35,7 @@ mock_roles:
   - start-zuul-console
   - sphinx
   - tox
+  - upload-container-image
   - validate-host
 use_default_rules: true
 skip_list:
