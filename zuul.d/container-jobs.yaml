@@ -6,7 +6,6 @@
       Build container image(s) in SCS using podman
 
       .. include:: ../../playbooks/container-image/README.rst
-    pre-run: playbooks/container-image/pre.yaml
 
 - job:
     name: scs-upload-container-image
