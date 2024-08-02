@@ -8,6 +8,7 @@
     - start-zuul-console
     - validate-host
     - prepare-workspace
+    - configure-mirrors
 
 # If there is a registered role (as constructed from project name) try to
 # generate secret-id and leave it at well-known location. The job is then
