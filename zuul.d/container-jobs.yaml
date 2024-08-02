@@ -17,6 +17,7 @@
       .. include:: ../../playbooks/container-image/README.rst
     post-run: playbooks/container-image/upload.yaml
     vars:
+      container_command: "podman"
       vault_data:
         vault_role_name: "zuul_scs_sovereigncloudstack_zuul-scs-jobs"
         vault_role_id: "bc5d3801-3c73-acd0-1e63-de5ed0041a07"
