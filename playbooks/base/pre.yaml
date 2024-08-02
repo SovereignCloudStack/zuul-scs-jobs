@@ -8,10 +8,6 @@
     - start-zuul-console
     - validate-host
     - prepare-workspace
-    - role: configure-mirrors
-      vars:
-        set_apt_mirrors_trusted: True
-        mirror_use_ssl: True
 
 # If there is a registered role (as constructed from project name) try to
 # generate secret-id and leave it at well-known location. The job is then
