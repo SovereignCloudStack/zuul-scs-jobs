@@ -9,6 +9,7 @@ mock_roles:
   - add-build-sshkey
   - bindep
   - build-container-image
+  - configure-mirrors
   - emit-job-header
   - ensure-docker
   - ensure-if-python

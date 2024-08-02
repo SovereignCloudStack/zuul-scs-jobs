@@ -8,7 +8,8 @@
     - start-zuul-console
     - validate-host
     - prepare-workspace
-    - configure-mirrors:
+    - role: configure-mirrors
+      vars:
         set_apt_mirrors_trusted: True
         mirror_use_ssl: True
 
