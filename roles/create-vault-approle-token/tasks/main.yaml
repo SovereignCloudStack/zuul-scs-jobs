@@ -1,6 +1,6 @@
 - name: Lookup unwrap secret - verify it has expected data
   no_log: true
-  uri:
+  ansible.builtin.uri:
     url: "{{ vault_addr }}/v1/sys/wrapping/lookup"
     headers:
       X-Vault-Token: "{{ vault_token }}"
@@ -18,7 +18,7 @@
 
 - name: Unwrap secret
   no_log: true
-  uri:
+  ansible.builtin.uri:
     url: "{{ vault_addr }}/v1/sys/wrapping/unwrap"
     headers:
       X-Vault-Token: "{{ vault_wrapping_token_id }}"
@@ -31,7 +31,7 @@
 
 - name: Login to vault
   no_log: true
-  uri:
+  ansible.builtin.uri:
     url: "{{ vault_addr }}/v1/auth/approle/login"
     body:
       role_id: "{{ vault_role_id }}"
@@ -45,7 +45,7 @@
 # checksum of it to be easily readable, therefore use no_log
 - name: Write vault token into the destination
   no_log: true
-  copy:
+  ansible.builtin.copy:
     content: "{{ vault_token_data.json.auth.client_token }}"
     dest: "{{ vault_token_dest }}"
     mode: "0400"
