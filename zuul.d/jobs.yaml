@@ -33,7 +33,7 @@
       - playbooks/base/post-fetch.yaml
 
 - job:
-    name: scs-tox-liters
+    name: scs-tox-linters
     parent: tox-linters
     description:
       run `tox -e linters` in a fedora pod
