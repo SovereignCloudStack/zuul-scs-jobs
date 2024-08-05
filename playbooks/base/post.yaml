@@ -1,5 +1,10 @@
 ---
-- name: Base post
-  hosts: all
-  roles:
-    - remove-build-sshkey
+- hosts: all
+  ignore_errors: yes
+  tasks:
+    - block:
+        - include_role:
+            name: remove-build-sshkey
+      when:
+        - "ansible_connection != 'kubectl'"
+        - ansible_user_dir is defined
