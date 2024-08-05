@@ -16,3 +16,9 @@
     nodes:
       - name: fedora-pod
         label: pod-fedora-39
+
+- nodeset:
+    name: pod-fedora-40
+    nodes:
+      - name: fedora-pod
+        label: pod-fedora-40

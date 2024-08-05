@@ -37,7 +37,7 @@
     parent: tox-linters
     description:
       run `tox -e linters` in a fedora pod
-    nodeset: pod-fedora-39
+    nodeset: pod-fedora-40
 
 #- semaphore:
 #    name: semaphore-openstack-access
