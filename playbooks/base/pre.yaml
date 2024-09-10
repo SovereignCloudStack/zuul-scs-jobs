@@ -18,7 +18,9 @@
             name: validate-host
         - ansible.builtin.include_role:
             name: prepare-workspace
-
+        - ansible.builtin.include_role:
+            name: ensure-output-dirs
+            
         # Some roles are not doing `apt update` and thus not able to install
         # required packages.
         - name: Update APT cache  # noqa no-handler
@@ -35,6 +37,8 @@
             name: prepare-workspace-openshift
         - ansible.builtin.include_role:
             name: remove-zuul-sshkey
+        - ansible.builtin.include_role:
+            name: ensure-output-dirs
       run_once: true
       when: "ansible_connection == 'kubectl'"
 
