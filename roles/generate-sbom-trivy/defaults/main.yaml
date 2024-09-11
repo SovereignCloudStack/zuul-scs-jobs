@@ -1,0 +1,4 @@
+generate_sbom_trivy_executable: "/usr/local/bin/trivy"
+generate_sbom_trivy_command: ""
+generate_sbom_trivy_format: "cyclonedx"
+generate_sbom_trivy_path: "{{ ansible_user }}/zuul-output/sboms/trivy-sbom.json"

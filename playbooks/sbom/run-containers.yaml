@@ -1,0 +1,24 @@
+---
+# Generate SBOM for container images using trivy and syft
+- hosts: all
+  tasks:
+    - name: "Generate SBOM with syft"
+      ansible.builtin.include_role:
+        name: "generate-sbom-syft"
+      vars:
+        generate_sbom_syft_source: "{{ zj_item.registry }}/{{ zj_item.name }}:{{ zj_item.tag }}@{{ zj_item.hash }}"
+        generate_sbom_syft_path: "{{ ansible_user_dir }}/zuul-output/artifacts/sboms/{{ zj_item.name }}.syft.json"
+      loop: "{{ images }}"
+      loop_control:
+        loop_var: "zj_item"
+
+    - name: "Generate SBOM with trivy"
+      ansible.builtin.include_role:
+        name: "generate-sbom-trivy"
+      vars:
+        generate_sbom_trivy_source: "{{ zj_item.registry }}/{{ zj_item.name }}:{{ zj_item.tag }}@{{ zj_item.hash }}"
+        generate_sbom_trivy_path: "{{ ansible_user_dir }}/zuul-output/artifacts/sboms/{{ zj_item.name }}.trivy.json"
+        generate_sbom_trivy_command: "image"
+      loop: "{{ images }}"
+      loop_control:
+        loop_var: "zj_item"

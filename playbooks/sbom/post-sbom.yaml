@@ -1,0 +1,51 @@
+---
+# Upload every SBOM produced using `images` variable to DependencyTrack
+- hosts: localhost
+  vars:
+    vault_addr: "{{ zuul_vault_addr }}"
+    vault_token: "{{ lookup('file', zuul_base_vault_token_path) }}"
+    vault_secret_dest: "{{ zuul.executor.work_root }}/.approle-secret"
+    vault_token_dest: "{{ zuul.executor.work_root }}/.approle-token"
+    vault_role_name: "{{ vault_data.vault_role_name }}"
+
+  roles:
+    - role: "create-vault-approle-secret"
+
+    - role: "create-vault-approle-token"
+      vault_role_id: "{{ vault_data.vault_role_id }}"
+      vault_wrapping_token_id: "{{ lookup('file', vault_secret_dest) }}"
+
+  tasks:
+    - name: "Get Dependencytrack credentials"
+      no_log: true
+      ansible.builtin.uri:
+        url: "{{ vault_addr }}/v1/secret/data/{{ dependencytrack_vault_secret_path | default('dependency-track/main') }}"
+        method: "GET"
+        headers:
+          "X-Vault-Token": "{{ lookup('file', vault_token_dest) }}"
+        body_format: "json"
+        return_content: true
+      register: "dt_credentials"
+      failed_when: false
+
+    - name: "Upload BOMs to dependency track"
+      ansible.builtin.import_role:
+        name: "upload-bom-to-dependencytrack"
+      vars:
+        dependencytrack_credentials: "{{ dt_credentials.json.data.data }}"
+        bom_artifacts: 
+          - project_name: "{{ zj_image.name }}"
+            project_version: "{{ zj_image.tag }}"
+            bom_path: "{{ ansible_user_dir }}/artifacts/sboms/{{ zj_image.name }}.syft.json"
+      loop: "{{ images }}"
+      loop_control:
+        loop_var: "zj_image"
+      when:
+        - "dt_credentials is defined"
+        - "dt_credentials.json is defined"
+        - "dt_credentials.json.data is defined"
+
+    - name: "Remove vault token file"
+      file:
+        path: "{{ vault_token_dest }}"
+        state: "absent"
