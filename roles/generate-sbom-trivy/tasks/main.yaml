@@ -1,0 +1,2 @@
+- name: Generate SBOM for artifact with trivy
+  ansible.builtin.command: "{{ generate_sbom_trivy_executable }} {{ generate_sbom_trivy_command | default() }} {{ generate_sbom_trivy_source }} --format {{ generate_sbom_trivy_format }} --output {{ generate_sbom_trivy_path }}"

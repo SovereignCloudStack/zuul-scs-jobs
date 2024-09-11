@@ -1,0 +1,4 @@
+generate_sbom_syft_executable: "/usr/local/bin/syft"
+generate_sbom_syft_command: "scan"
+generate_sbom_syft_format: "cyclonedx-json@1.6"
+generate_sbom_syft_path: "{{ ansible_user }}/zuul-output/sboms/syft-sbom.json"

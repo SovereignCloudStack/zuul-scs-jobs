@@ -1,0 +1,45 @@
+---
+- job:
+    name: scs-generate-sbom-container-images
+    description: |
+      Produce SBOM for the container images using syft and trivy scanners.
+
+      .. zuul:jobvar:: images
+         :type: list
+
+         List of image objects to generate SBOM for
+
+         .. zuul:jobvar:: registry
+            :type: string
+
+            Registry url (i.e. registry.scs.community)
+
+         .. zuul:jobvar:: name
+            :type: string
+
+            Container name
+
+         .. zuul:jobvar:: tag
+            :type: string
+
+            Container tag
+
+         .. zuul:jobvar:: hash
+            :type: string
+
+            Container Hash
+
+    nodeset: pod-fedora-40
+    pre-run: playbooks/sbom/pre.yaml
+    run: playbooks/sbom/run-containers.yaml
+
+- job:
+    name: scs-upload-sbom-container-images-dependency-track
+    parent: scs-generate-sbom-container-images
+    description: |
+      Produce SBOM for the container images using syft and trivy scanners and
+      upload it to DependencyTrack.
+    nodeset: pod-fedora-40
+    post-run: playbooks/sbom/post-sbom.yaml
+    vars:
+      dependencytrack_vault_secret_path: "dependency-track/main"

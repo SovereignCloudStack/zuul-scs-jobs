@@ -29,6 +29,10 @@ Projects without repositories and current project
 
 ``zuul.d/container-jobs.yaml``
 
+## SBOM jobs
+
+``zuul.d/sbom-jobs.yaml``
+
 ## Secrets
 
 Deprecated location for the secrets that are stored in git itself. New approach

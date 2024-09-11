@@ -1,0 +1,15 @@
+---
+ensure_trivy_version: "0.55.0"
+ensure_trivy_name: "trivy"
+ensure_trivy_github_owner: "aquasecurity"
+ensure_trivy_github_repo: "trivy"
+ensure_trivy_version: "0.55.0"
+ensure_trivy_tag: "v{{ ensure_trivy_version }}"
+ensure_trivy_download_prefix: "https://github.com/{{ ensure_trivy_github_owner }}/{{ ensure_trivy_github_repo }}/releases/download"
+ensure_trivy_release_info_url_prefix: "https://github.com/{{ ensure_trivy_github_owner }}/{{ ensure_trivy_github_repo }}/releases/"
+ensure_trivy_os: "{{ ansible_system }}"
+ensure_trivy_arch: "{{ ensure_trivy_arch_translation[ansible_architecture] }}"
+ensure_trivy_install_dir: "/usr/local/bin"
+ensure_trivy_arch_translation:
+  amd64: "64bit"
+  x86_64: "64bit"
