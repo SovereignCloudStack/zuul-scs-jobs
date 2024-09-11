@@ -36,6 +36,53 @@
         comment: false
 
 - pipeline:
+    name: check-post
+    description: |
+      Pull requests that received initial review from contributor with write
+      permissions may run additional checks requiring access to the external
+      resources requring careful control.
+    manager: independent
+    precedence: low
+    post-review: True
+    require:
+      github:
+        review:
+          - type: approved
+            permission: write
+        current-patchset: True
+        open: True
+        label: 'post'
+    trigger:
+      github:
+        - event: pull_request
+          action: comment
+          comment: (?i)^\s*recheck post\s*$
+        - event: check_run
+          action: rerequested
+          check: .*/check-post:.*
+        # Trigger when label is added
+        - event: pull_request
+          action: labeled
+          label:
+            - post
+    start:
+      github:
+        check: 'in_progress'
+        comment: false
+    success:
+      github:
+        check: 'success'
+        comment: false
+    failure:
+      github:
+        check: 'failure'
+        comment: false
+    dequeue:
+      github:
+        check: cancelled
+        comment: false
+
+- pipeline:
     name: gate
     description: |
       Changes that have been approved by core developers are enqueued
