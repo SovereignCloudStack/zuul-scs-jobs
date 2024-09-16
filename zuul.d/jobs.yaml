@@ -50,6 +50,8 @@
     post-run: playbooks/openstack/post.yaml
     semaphores:
       - semaphore-openstack-access
+    allowed-projects:
+      - SovereignCloudStack/zuul-config
     vars:
       cloud: "gx-scs-zuul"
       vault_cloud_secret_path: "clouds/gx_scs_k8s_e2e"
