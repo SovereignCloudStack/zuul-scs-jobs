@@ -18,7 +18,6 @@
 - name: OpenStack access configuration file
   hosts: all
   vars:
-    vault_addr: "{{ zuul_vault_addr }}"
     vault_token_dest: "{{ zuul.executor.work_root }}/.approle-token"
 
   tasks:
@@ -32,8 +31,9 @@
       register: cloud_config
 
     - name: Get temporary application credentials
+      no_log: true
       openstack_application_credentials:
-        cloud: "{{ cloud_config }}"
+        cloud: "{{ cloud_config.config }}"
         name: "functest_{{ zuul.change }}"
       register: app_cred
 

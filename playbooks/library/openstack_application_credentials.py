@@ -10,7 +10,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from ansible.module_utils.basic import AnsibleModule, sanitize_keys
+from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.basic import missing_required_lib
 
 try:
@@ -63,12 +63,15 @@ class ApplicationCredentialsModule:
                         name=self.params["name"],
                         unrestricted=self.params["unrestricted"],
                     )
-                self.exit_json(
-                    changed=False,
-                    application_credential=sanitize_keys(
-                        app_cred, self.ansible.no_log_values, []
-                    ),
-                )
+                    self.exit_json(
+                        changed=True,
+                        application_credential=app_cred,
+                    )
+                else:
+                    self.exit_json(
+                        changed=False,
+                        application_credential=app_cred,
+                    )
             elif self.params["state"] == "absent" and app_cred:
                 conn.identity.delete_application_credential(
                     user=user_id, application_credential=app_cred
