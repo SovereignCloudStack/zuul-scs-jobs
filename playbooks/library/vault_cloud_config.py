@@ -32,7 +32,7 @@ class VaultCloudConfigModule:
         vault_token=dict(type="str", no_log=True),
         cloud_secret_path=dict(type="str"),
         project_name=dict(type="str"),
-        mode=dict(type="str", defualt="config", chocies=["config", "token"]),
+        mode=dict(type="str", default="config", chocies=["config", "token"]),
     )
     module_kwargs = {
         "supports_check_mode": True,
