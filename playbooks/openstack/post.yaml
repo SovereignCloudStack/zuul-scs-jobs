@@ -1,0 +1,22 @@
+---
+- name: "Revoke temporary credentials"
+  hosts: localhost
+  vars:
+    vault_addr: "{{ zuul_vault_addr }}"
+    vault_token_dest: "{{ zuul.executor.work_root }}/.approle-token"
+
+  tasks:
+    - name: "Get cloud config from vault"
+      no_log: true
+      vault_cloud_config:
+        vault_addr: "{{ zuul_vault_addr }}"
+        vault_token: "{{ lookup('file', zuul_base_vault_token_path) }}"
+        cloud_secret_path: "{{ vault_cloud_secret_path }}"
+        mode: "config"
+      register: cloud_config
+
+    - name: "Drop temporary credentials by name"
+      openstack_application_credentials:
+        cloud: "{{ cloud_config }}"
+        name: "functest_{{ zuul.change }}"
+        state: "absent"

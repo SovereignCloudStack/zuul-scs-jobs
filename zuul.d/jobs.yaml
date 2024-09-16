@@ -39,18 +39,19 @@
       run `tox -e linters` in a fedora pod
     nodeset: pod-fedora-40
 
-#- semaphore:
-#    name: semaphore-openstack-access
-#    max: 3
-#
-#- job:
-#    name: openstack-access-base
-#    parent: base
-#    pre-run: playbooks/openstack/access.yaml
-#    semaphores:
-#      - semaphore-openstack-access
-#    vars:
-#      cloud: "gx-scs-zuul"
-#    secrets:
-#      - secret: openstack-application-credential
-#        name: openstack_appcred
+- semaphore:
+    name: semaphore-openstack-access
+    max: 3
+
+- job:
+    name: openstack-access-base
+    parent: base
+    pre-run: playbooks/openstack/pre.yaml
+    post-run: playbooks/openstack/post.yaml
+    semaphores:
+      - semaphore-openstack-access
+    vars:
+      cloud: "gx-scs-zuul"
+      vault_cloud_secret_path: "clouds/gx_scs_k8s_e2e"
+      vault_role_name: "zuul_scs_sovereigncloudstack_zuul-scs-jobs"
+      vault_role_id: "bc5d3801-3c73-acd0-1e63-de5ed0041a07"
