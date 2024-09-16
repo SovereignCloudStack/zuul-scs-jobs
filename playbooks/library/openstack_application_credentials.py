@@ -56,6 +56,7 @@ class ApplicationCredentialsModule:
                 name_or_id=self.params["name"],
                 ignore_missing=True,
             )
+            changed: bool = False
             if self.params["state"] == "present":
                 if not app_cred:
                     app_cred = conn.identity.create_application_credential(
@@ -63,20 +64,18 @@ class ApplicationCredentialsModule:
                         name=self.params["name"],
                         unrestricted=self.params["unrestricted"],
                     )
-                    self.exit_json(
-                        changed=True,
-                        application_credential=app_cred,
-                    )
-                else:
-                    self.exit_json(
-                        changed=False,
-                        application_credential=app_cred,
-                    )
-            elif self.params["state"] == "absent" and app_cred:
-                conn.identity.delete_application_credential(
-                    user=user_id, application_credential=app_cred
+                    changed = True
+                self.exit_json(
+                    changed=changed,
+                    application_credential=app_cred,
                 )
-                self.exit_json(changed=True)
+            elif self.params["state"] == "absent":
+                if app_cred:
+                    conn.identity.delete_application_credential(
+                        user=user_id, application_credential=app_cred
+                    )
+                    changed = True
+                self.exit_json(changed=changed)
 
         except openstack.exceptions.SDKException as e:
             self.fail_json(msg="Failure connecting to the cloud", error=str(e))
