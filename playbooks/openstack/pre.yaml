@@ -13,7 +13,6 @@
 
     # Unwrap secret and exchange it for the Vault access token
     - role: create-vault-approle-token
-      vault_role_id: "{{ zuul_vault.vault_role_id }}"
       vault_wrapping_token_id: "{{ lookup('file', vault_secret_dest) }}"
 
 - name: OpenStack access configuration file
@@ -28,7 +27,7 @@
       vault_cloud_config:
         vault_addr: "{{ zuul_vault_addr }}"
         vault_token: "{{ lookup('file', vault_token_dest) }}"
-        cloud_secret_path: "{{ vault_cloud_secret_path }}"
+        cloud_secret_path: "{{ vault_cloud_path }}"
         mode: "config"
       register: cloud_config
 
