@@ -28,7 +28,7 @@
       no_log: true
       vault_cloud_config:
         vault_addr: "{{ zuul_vault_addr }}"
-        vault_token: "{{ lookup('file', zuul_base_vault_token_path) }}"
+        vault_token: "{{ lookup('file', vault_token_dest) }}"
         cloud_secret_path: "{{ vault_cloud_secret_path }}"
         mode: "config"
       register: cloud_config
