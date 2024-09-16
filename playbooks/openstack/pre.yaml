@@ -32,7 +32,8 @@
       register: cloud_config
 
     - name: Get temporary application credentials
-      # no_log: true
+      no_log: true
+      delegate_to: localhost
       openstack_application_credentials:
         cloud: "{{ cloud_config.config }}"
         name: "functest_{{ zuul.change }}"
