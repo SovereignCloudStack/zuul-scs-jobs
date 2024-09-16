@@ -54,7 +54,6 @@
       - SovereignCloudStack/zuul-config
     vars:
       cloud: "gx-scs-zuul"
-      vault_cloud_secret_path: "clouds/gx_scs_k8s_e2e"
-      zuul_vault:
-        vault_role_name: "zuul_scs_sovereigncloudstack_zuul-scs-jobs"
-        vault_role_id: "bc5d3801-3c73-acd0-1e63-de5ed0041a07"
+      vault_cloud_path: "clouds/gx_scs_k8s_e2e"
+      vault_role_name: "zuul_scs_sovereigncloudstack_zuul-scs-jobs"
+      vault_role_id: "bc5d3801-3c73-acd0-1e63-de5ed0041a07"
