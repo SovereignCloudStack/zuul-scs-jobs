@@ -172,7 +172,7 @@ class VaultCloudConfigModule:
 
         except Exception as ex:
             self.fail_json(
-                msg=f"Failed to process vault response",
+                msg="Failed to process vault response",
                 error=str(ex),
             )
 
