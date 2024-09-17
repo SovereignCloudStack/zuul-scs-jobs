@@ -48,10 +48,13 @@
     parent: base
     pre-run: playbooks/openstack/pre.yaml
     post-run: playbooks/openstack/post.yaml
+    post-review: True
     semaphores:
       - semaphore-openstack-access
     allowed-projects:
       - SovereignCloudStack/zuul-config
+      - SovereignCloudStack/k8s-cluster-api-provider
+      - SovereignCloudStack/cluster-stacks
     vars:
       cloud: "gx-scs-zuul"
       vault_cloud_path: "clouds/gx_scs_k8s_e2e"

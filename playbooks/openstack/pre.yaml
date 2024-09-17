@@ -36,7 +36,7 @@
       delegate_to: localhost
       openstack_application_credentials:
         cloud: "{{ cloud_config.config }}"
-        name: "functest_{{ zuul.change }}"
+        name: "functest_{{ zuul.build }}"
       register: app_cred
 
     - name: Ensure openstack directory exists
@@ -51,11 +51,11 @@
       ansible.builtin.template:
         src: "templates/clouds.yaml.j2"
         dest: "/etc/openstack/clouds.yaml"
-        mode: "0400"
+        mode: "0440"
 
     - name: Create secure.yaml
       become: true
       ansible.builtin.template:
         src: "templates/secure.yaml.j2"
         dest: "/etc/openstack/secure.yaml"
-        mode: "0400"
+        mode: "0440"
