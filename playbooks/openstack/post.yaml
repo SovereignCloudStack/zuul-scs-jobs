@@ -17,5 +17,5 @@
     - name: "Drop temporary credentials by name"
       openstack_application_credentials:
         cloud: "{{ cloud_config.config }}"
-        name: "functest_{{ zuul.change }}"
+        name: "functest_{{ zuul.build }}"
         state: "absent"
