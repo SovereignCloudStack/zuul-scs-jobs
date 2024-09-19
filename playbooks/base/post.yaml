@@ -11,6 +11,8 @@
     - block:
         - ansible.builtin.include_role:
             name: fetch-output-openshift
+          vars:
+            zuul_log_verbose: true
       when:
         - "ansible_connection == 'kubectl'"
         - ansible_user_dir is defined
