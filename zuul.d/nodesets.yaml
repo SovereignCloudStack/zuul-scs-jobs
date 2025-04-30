@@ -12,6 +12,12 @@
         label: ubuntu-jammy-large
 
 - nodeset:
+    name: ubuntu-noble
+    nodes:
+      - name: ubuntu-noble
+        label: ubuntu-noble
+
+- nodeset:
     name: pod-fedora-39
     nodes:
       - name: fedora-pod
