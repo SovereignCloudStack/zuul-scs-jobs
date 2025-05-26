@@ -14,13 +14,13 @@
 
 - pipeline:
     name: periodic-daily
-    description: This pipeline runs jobs daily at 3am.
+    description: This pipeline runs jobs daily at midnight UTC.
     post-review: true
     manager: independent
     precedence: low
     trigger:
       timer:
-        - time: '0 3 * * *'
+        - time: '0 0 * * *'
     failure:
       mqtt:
         topic: "zuul/{pipeline}/{project}/{branch}/{change}"
