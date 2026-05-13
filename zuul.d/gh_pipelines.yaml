@@ -13,10 +13,12 @@
             - changed
             - reopened
         - event: pull_request
-          action: comment
+          action:
+            - comment
           comment: (?i)^\s*recheck\s*$
         - event: check_run
-          action: rerequested
+          action:
+            - rerequested
           check: .*/check:.*
     start:
       github:
@@ -55,14 +57,17 @@
     trigger:
       github:
         - event: pull_request
-          action: comment
+          action:
+            - comment
           comment: (?i)^\s*recheck post\s*$
         - event: check_run
-          action: rerequested
+          action:
+            - rerequested
           check: .*/check-post:.*
         # Trigger when label is added
         - event: pull_request
-          action: labeled
+          action:
+            - labeled
           label:
             - post
     start:
@@ -102,22 +107,28 @@
     trigger:
       github:
         - event: pull_request_review
-          action: submitted
+          action:
+            - submitted
           state: approved
         - event: pull_request
-          action: comment
+          action:
+            - comment
           comment: (?i)^\s*regate\s*$
         - event: pull_request_review
-          action: dismissed
+          action:
+            - dismissed
           state: request_changes
         - event: pull_request
-          action: status
+          action:
+            - status
           status: ".*:success"
         - event: check_run
-          action: rerequested
+          action:
+            - rerequested
           check: .*/gate:.*
         - event: pull_request
-          action: labeled
+          action:
+            - labeled
           label:
             - gate
     start:
@@ -174,7 +185,8 @@
     trigger:
       github:
         - event: pull_request
-          action: labeled
+          action:
+            - labeled
           label:
             - e2e-test
     start:
@@ -223,7 +235,8 @@
     trigger:
       github:
         - event: pull_request
-          action: labeled
+          action:
+            - labeled
           label:
             - e2e-quick-test
     start:
